@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Ecosystem — Functional Map (v5.4 — Logo + Name, details on hover)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0f172a; --panel2:#0b1220; --text:#e5e7eb; --muted:#a3b3cc;
+      --border:#334155; --ring:#7c3aed; --shadow:0 14px 28px rgba(0,0,0,.28);
+      --radius:16px; --radius-lg:20px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:var(--text);
+      background: radial-gradient(1200px 800px at 20% 5%, #101735 0%, #0f1328 40%, #0b1020 100%);}
+    .container{max-width:1100px;margin:0 auto;padding:44px 18px}
+    header .title{font-size:38px;line-height:1.1;margin:0 0 8px;font-weight:800;text-align:center}
+    header .subtitle{color:#cbd5e1;text-align:center;margin:0 auto 18px;max-width:780px}
+    .legend-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:20px 0 18px}
+    .legend-item{display:flex;align-items:center;gap:8px;color:#cbd5e1;font-size:13px}
+    .dot{width:10px;height:10px;border-radius:999px}
+    .dot.pink{background:#ec4899}.dot.orange{background:#f59e0b}.dot.blue{background:#3b82f6}
+    .dot.green{background:#10b981}.dot.indigo{background:#6366f1}.dot.teal{background:#14b8a6}
+
+    .toolbar-wrap{position:sticky;top:0;z-index:50;padding:8px 0 0}
+    .toolbar{backdrop-filter:saturate(140%) blur(8px);background:linear-gradient(180deg, rgba(17,24,39,.85), rgba(2,6,23,.5));
+      border:1px solid var(--border);border-radius:var(--radius-lg);padding:10px;box-shadow: var(--shadow);}
+    .toolbar-inner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+    .pill{position:relative;display:flex;align-items:center;gap:8px;background:#0f172a;color:#e5e7eb;border:1px solid #41526a;
+      padding:10px 14px;border-radius:999px;cursor:pointer;user-select:none;font-weight:600;font-size:14px;}
+    .pill:hover{background:#17243a}
+    .pill[aria-expanded="true"]{outline:2px solid #3b82f6; outline-offset:2px}
+    .pill .label{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .chev{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #cbd5e1;transform:translateY(1px);}
+    .menu{position:absolute;top:calc(100% + 8px);left:0;min-width:220px;background:#0b1220;border:1px solid var(--border);
+      border-radius:14px;padding:6px;box-shadow:var(--shadow);display:none;z-index:60;}
+    .menu.show{display:block}
+    .menu .item{padding:10px 10px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;color:#cbd5e1;cursor:pointer;}
+    .menu .item:hover{background:#121a30}
+    .menu .item.active{background:#1d2a47;color:#fff}
+    .badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border);color:#cbd5e1;background:#0b1220}
+    .search{flex:1 1 260px;min-width:220px;max-width:380px;display:flex;align-items:center;gap:8px;background:#0b1220;border:1px solid var(--border);border-radius:999px;padding:8px 10px;color:#cbd5e1}
+    .search input{flex:1;background:transparent;border:0;outline:none;color:#e5e7eb;font-size:14px}
+    .search .kbd{font-size:10px;border:1px solid var(--border);padding:2px 6px;border-radius:6px;color:#94a3b8}
+    .legend-panel{background:#0d1428;border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-top:10px}
+    .legend-panel h3{margin:0 0 6px;font-size:14px}
+    .legend-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .legend-box{background:linear-gradient(135deg,#1f2937,#0f172a);border:1px solid var(--border);border-radius:10px;margin:0 auto}
+    .legend-item2{text-align:center;font-size:12px;color:#cbd5e1}
+    .legend-box.xl{width:80px;height:80px}.legend-box.lg{width:64px;height:64px}.legend-box.md{width:52px;height:52px}.legend-box.sm{width:44px;height:44px}
+
+    .actions{display:flex;justify-content:center;margin-top:10px}
+    .reset{background:#17243a;border:1px solid #41526a;color:#e5e7eb;border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer}
+    .reset:hover{background:#1e2d49}
+
+    .list{display:flex;flex-direction:column;gap:18px;margin-top:18px}
+    .category{display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,#0f162c,#0b1220);border:1px solid var(--border);border-radius:var(--radius);padding:12px;box-shadow: var(--shadow)}
+    .cat-header{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;color:white;font-weight:800;letter-spacing:.2px;font-size:14px}
+    .bg-pink{background:linear-gradient(90deg,#ec4899,#be123c)}.bg-orange{background:linear-gradient(90deg,#f59e0b,#ea580c)}
+    .bg-blue{background:linear-gradient(90deg,#3b82f6,#06b6d4)}.bg-green{background:linear-gradient(90deg,#22c55e,#059669)}
+    .bg-indigo{background:linear-gradient(90deg,#6366f1,#7c3aed)}.bg-teal{background:linear-gradient(90deg,#14b8a6,#059669)}
+    .cat-header .ico{width:16px;height:16px;opacity:.95}
+    .cards{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-start;padding:4px}
+
+    .card{
+      position:relative;
+      background:#0f172a;
+      border:1px solid #22324a;
+      border-radius:16px;
+      padding:12px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+      cursor:pointer; transition: transform .18s, box-shadow .18s, border .18s;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      overflow:hidden;
+      gap:10px;
+    }
+    .card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#41526a}
+    .name{font-weight:800;color:white;margin:0;font-size:14px;text-align:center;line-height:1.2}
+    .size-xl{width:168px;height:168px}.size-lg{width:140px;height:140px}.size-md{width:112px;height:112px}.size-sm{width:92px;height:92px}
+
+    .logo{
+      width:40px;height:40px;border-radius:12px;background:#0b1220;border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;
+    }
+    .logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .logo .init{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#e5e7eb;background: radial-gradient(120px 80px at 30% 30%, #1e293b 0%, #0b1220 70%)}
+
+    .ftooltip{
+      position:fixed; left:0; top:0; transform:translate(-9999px,-9999px);
+      background:#0b1220; color:#fff; border:1px solid var(--border); border-radius:10px;
+      padding:10px; width:max-content; max-width:280px; box-shadow:var(--shadow); z-index:1000; pointer-events:none;
+    }
+    .ftooltip h4{margin:0 0 6px;font-size:13px}
+    .ftooltip ul{margin:0;padding-left:16px;color:#cbd5e1;font-size:12px}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <!-- Header must remain ONLY this French phrase as requested -->
+      <h1 class="title">AI Ecosystem – Functional Map</h1>
+      <!-- Subtitle intentionally removed -->
+      <div class="legend-row">
+        <div class="legend-item"><span class="dot pink"></span> <span>Creative</span></div>
+        <div class="legend-item"><span class="dot orange"></span> <span>Automation</span></div>
+        <div class="legend-item"><span class="dot blue"></span> <span>Programmatic</span></div>
+        <div class="legend-item"><span class="dot green"></span> <span>Marketing Cloud</span></div>
+        <div class="legend-item"><span class="dot indigo"></span> <span>Data &amp; Measurement</span></div>
+        <div class="legend-item"><span class="dot teal"></span> <span>Retail Media</span></div>
+      </div>
+    </header>
+
+    <div class="toolbar-wrap">
+      <div class="toolbar">
+        <div class="toolbar-inner" id="toolbar">
+          <div class="pill" role="button" tabindex="0" aria-expanded="false" aria-haspopup="listbox" data-dd="category">
+            <span class="label" data-label="category">Category</span><div class="chev"></div>
+            <div class="menu" role="listbox" aria-label="Category">
+              <div class="item active" data-value="all" data-text="Category: All">All <span class="badge" id="count-all">0</span></div>
+              <div class="item" data-value="creative_ai" data-text="Category: Creative">Creative <span class="badge" id="count-creative_ai">0</span></div>
+              <div class="item" data-value="media_automation" data-text="Category: Automation">Automation <span class="badge" id="count-media_automation">0</span></div>
+              <div class="item" data-value="programmatic" data-text="Category: Programmatic">Programmatic <span class="badge" id="count-programmatic">0</span></div>
+              <div class="item" data-value="martech" data-text="Category: Marketing Cloud">Marketing Cloud <span class="badge" id="count-martech">0</span></div>
+              <div class="item" data-value="measurement" data-text="Category: Data & Measurement">Data &amp; Measurement <span class="badge" id="count-measurement">0</span></div>
+              <div class="item" data-value="retail_platforms" data-text="Category: Retail Media">Retail Media <span class="badge" id="count-retail_platforms">0</span></div>
+              <div class="item" data-value="specialized" data-text="Category: Specialized">Specialized <span class="badge" id="count-specialized">0</span></div>
+            </div>
+          </div>
+          <div class="pill" role="button" tabindex="0" aria-expanded="false" aria-haspopup="listbox" data-dd="size">
+            <span class="label" data-label="size">Size</span><div class="chev"></div>
+            <div class="menu" role="listbox" aria-label="Size">
+              <div class="item active" data-value="all" data-text="Size: All">All</div>
+              <div class="item" data-value="xl" data-text="Size: XL">XL — Dominant</div>
+              <div class="item" data-value="lg" data-text="Size: L">L — Leaders</div>
+              <div class="item" data-value="md" data-text="Size: M">M — Scale-ups</div>
+              <div class="item" data-value="sm" data-text="Size: S">S — Specialists</div>
+            </div>
+          </div>
+          <div class="pill" role="button" tabindex="0" aria-expanded="false" aria-haspopup="listbox" data-dd="sort">
+            <span class="label" data-label="sort">Sort by</span><div class="chev"></div>
+            <div class="menu" role="listbox" aria-label="Sort by">
+              <div class="item active" data-value="relevance" data-text="Sort: Relevance">Relevance</div>
+              <div class="item" data-value="name-asc" data-text="Sort: Name A → Z">Name A → Z</div>
+              <div class="item" data-value="size-desc" data-text="Sort: Size XL → S">Size XL → S</div>
+              <div class="item" data-value="size-asc" data-text="Sort: Size S → XL">Size S → XL</div>
+            </div>
+          </div>
+
+          <label class="toggle" title="Show logos" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid #41526a;border-radius:999px;background:#0f172a">
+            <input id="logosToggle" type="checkbox" checked style="appearance:none;width:34px;height:18px;border-radius:999px;background:#1f2a3f;position:relative;outline:none;cursor:pointer;border:1px solid #41526a" />
+            <span>Logos</span>
+          </label>
+
+          <div class="search" role="search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9fb0c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            <input id="q" type="search" placeholder="Search (e.g., “Runway”, “attribution”)" aria-label="Search" />
+            <span class="kbd">/</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend-panel">
+        <h3>Legend — Size = market influence</h3>
+        <div class="legend-grid">
+          <div class="legend-item2"><div class="legend-box xl"></div><div>XL • Dominant</div></div>
+          <div class="legend-item2"><div class="legend-box lg"></div><div>L • Leaders</div></div>
+          <div class="legend-item2"><div class="legend-box md"></div><div>M • Scale-ups</div></div>
+          <div class="legend-item2"><div class="legend-box sm"></div><div>S • Specialists</div></div>
+        </div>
+        <div class="actions">
+          <button id="resetBtn" class="reset" type="button">Reset filters</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="list" id="list"></main>
+  </div>
+
+  <div id="ftooltip" class="ftooltip hidden" role="status" aria-live="polite"></div>
+
+  <script>
+    const LOGO_DOMAIN = {
+      "Adobe Firefly":"adobe.com","Canva":"canva.com","Meta AI Sandbox":"meta.com","Midjourney":"midjourney.com","Runway ML":"runwayml.com",
+      "Synthesia":"synthesia.io","Jasper":"jasper.ai","TikTok Symphony":"tiktok.com","Pencil":"trypencil.com","Omneky":"omneky.com",
+      "ElevenLabs":"elevenlabs.io","Copy.ai":"copy.ai","Google Performance Max":"google.com","Meta Advantage+":"meta.com","Amazon Performance+":"amazon.com",
+      "TikTok Smart Performance":"tiktok.com","Smartly.io":"smartly.io","Metadata.io":"metadata.io","Olyzon":"olyzon.com","Lemon AI":"lemon.ai",
+      "Google DV360":"google.com","The Trade Desk":"thetradedesk.com","Microsoft Xandr":"xandr.com","StackAdapt":"stackadapt.com","Criteo":"criteo.com",
+      "Taboola":"taboola.com","Pacvue":"pacvue.com","Proxima":"proxima.ai","Adobe Experience":"adobe.com","Salesforce Einstein":"salesforce.com",
+      "Google Gemini":"google.com","Oracle CX":"oracle.com","HubSpot":"hubspot.com","Microsoft Copilot Ads":"microsoft.com","Google Analytics 4":"google.com",
+      "Amazon AMC":"amazon.com","Adobe Analytics":"adobe.com","LiveRamp":"liveramp.com","Segment":"segment.com","Northbeam":"northbeam.io","Measured":"measured.com",
+      "Mixpanel":"mixpanel.com","Shopify Magic":"shopify.com","Instacart Carrot":"instacart.com","Walmart Connect":"walmartconnect.com",
+      "Netflix":"netflix.com","Spotify Ad Studio":"spotify.com","Airbnb":"airbnb.com","Booking.com":"booking.com","Creatify":"creatify.ai","Icon":"iconiq.ai",
+      "Anyword":"anyword.com","Descript":"descript.com","TripleWhale":"triplewhale.com","Adverity":"adverity.com","Lotame":"lotame.com","Outbrain":"outbrain.com"
+    };
+
+    const CATEGORIES = {
+      creative_ai: { name: "AI Creative Production", badgeClass: "bg-pink", ico: "🎨", companies: [
+        { name: "Adobe Firefly", size: "lg" , tools: ["Image generation", "Text effects", "Generative fill"] },
+        { name: "Canva", size: "lg", tools: ["Magic Write", "Magic Design", "Background Remover"] },
+        { name: "Meta AI Sandbox", size: "lg", tools: ["Creative variations", "Backgrounds", "Text tools"] },
+        { name: "Midjourney", size: "md", tools: ["Image generation", "Ad assets"] },
+        { name: "Runway ML", size: "md", tools: ["Video generation", "Auto editing", "Special effects"] },
+        { name: "Synthesia", size: "md", tools: ["AI avatars", "Synthetic human videos"] },
+        { name: "Jasper", size: "md", tools: ["Ad copywriting", "Emails", "Landing pages"] },
+        { name: "TikTok Symphony", size: "md", tools: ["Content creation suite", "Smart Creative"] },
+        { name: "Pencil", size: "sm", tools: ["Creative A/B testing", "Variant generation"] },
+        { name: "Omneky", size: "sm", tools: ["DL creatives", "Optimization"] },
+        { name: "ElevenLabs", size: "sm", tools: ["Speech synthesis", "Voiceovers"] },
+        { name: "Copy.ai", size: "sm", tools: ["Text variants", "Marketing copy"] }
+      ]},
+      media_automation: { name: "Media & Campaign Automation", badgeClass: "bg-orange", ico: "⚡", companies: [
+        { name: "Google Performance Max", size: "xl", tools: ["Cross-channel automation", "Smart Bidding", "ML bidding"] },
+        { name: "Meta Advantage+", size: "xl", tools: ["Automated shopping", "App Campaigns", "End-to-end setup"] },
+        { name: "Amazon Performance+", size: "lg", tools: ["Automated DSP", "Agentic tool", "Sponsored AI"] },
+        { name: "TikTok Smart Performance", size: "lg", tools: ["Full automation", "Auto targeting"] },
+        { name: "Smartly.io", size: "md", tools: ["Creative automation", "Cross-platform media buying"] },
+        { name: "Metadata.io", size: "sm", tools: ["Autonomous B2B campaigns", "LinkedIn/Meta/Google"] },
+        { name: "Olyzon", size: "sm", tools: ["Automated trafficking", "Budget reallocation"] },
+        { name: "Lemon AI", size: "sm", tools: ["Low-code connectors", "Marketing workflows"] }
+      ]},
+      programmatic: { name: "Programmatic & DSP", badgeClass: "bg-blue", ico: "🎯", companies: [
+        { name: "Google DV360", size: "xl", tools: ["AI DSP optimization", "Dynamic Creative", "Audience signals"] },
+        { name: "The Trade Desk", size: "lg", tools: ["Koa AI", "Enterprise DSP", "ML optimization"] },
+        { name: "Microsoft Xandr", size: "lg", tools: ["Programmatic platform", "ML optimization", "LinkedIn data"] },
+        { name: "StackAdapt", size: "md", tools: ["AI-native DSP", "Multi-channel", "Display/Video/CTV"] },
+        { name: "Criteo", size: "md", tools: ["Commerce Media", "AI bidding engine"] },
+        { name: "Taboola", size: "md", tools: ["ML recommendations", "Sponsored content"] },
+        { name: "Pacvue", size: "sm", tools: ["Retail media automation", "Amazon/Walmart"] },
+        { name: "Proxima", size: "sm", tools: ["RL bidding", "Reinforcement learning"] }
+      ]},
+      martech: { name: "Marketing Cloud & Intelligence", badgeClass: "bg-green", ico: "🧠", companies: [
+        { name: "Adobe Experience", size: "lg", tools: ["Sensei AI", "Personalization", "Content analytics"] },
+        { name: "Salesforce Einstein", size: "lg", tools: ["Segmentation", "Recommendations", "NLP"] },
+        { name: "Google Gemini", size: "lg", tools: ["Creative generation", "Google Ads insights"] },
+        { name: "Oracle CX", size: "md", tools: ["ML orchestration", "Cross-channel"] },
+        { name: "HubSpot", size: "md", tools: ["Content Assistant", "Lead scoring", "Chatbots"] },
+        { name: "Microsoft Copilot Ads", size: "md", tools: ["Campaign generation", "AI assistance"] }
+      ]},
+      measurement: { name: "Analytics, Data & Measurement", badgeClass: "bg-indigo", ico: "📊", companies: [
+        { name: "Google Analytics 4", size: "xl", tools: ["ML predictions", "Data-driven attribution"] },
+        { name: "Amazon AMC", size: "lg", tools: ["Clean room", "Cross-media measurement"] },
+        { name: "Adobe Analytics", size: "md", tools: ["Sensei predictions", "Journey analytics"] },
+        { name: "LiveRamp", size: "md", tools: ["Identity resolution", "Clean room", "Activation"] },
+        { name: "Segment", size: "md", tools: ["CDP", "AI orchestration"] },
+        { name: "Northbeam", size: "sm", tools: ["DTC e-commerce attribution"] },
+        { name: "Measured", size: "sm", tools: ["Modernized MMM", "Incrementality ML"] },
+        { name: "Mixpanel", size: "sm", tools: ["Product analytics", "Retention ML"] }
+      ]},
+      retail_platforms: { name: "Retail Media & Platforms", badgeClass: "bg-teal", ico: "🛒", companies: [
+        { name: "Shopify Magic", size: "lg", tools: ["AI writing", "Product images", "Shop Assistant"] },
+        { name: "Instacart Carrot", size: "md", tools: ["Shopper targeting ML", "Recommendations"] },
+        { name: "Walmart Connect", size: "md", tools: ["Retail media DSP", "AI optimization"] },
+        { name: "Netflix", size: "md", tools: ["Ranking ML", "Large-scale A/B testing"] },
+        { name: "Spotify Ad Studio", size: "md", tools: ["Discovery ML", "Contextual audio targeting"] },
+        { name: "Airbnb", size: "sm", tools: ["Search ranking ML", "Dynamic pricing"] },
+        { name: "Booking.com", size: "sm", tools: ["Predictive personalization", "Chatbots"] }
+      ]},
+      specialized: { name: "Specialized Tools", badgeClass: "bg-indigo", ico: "📣", companies: [
+        { name: "Creatify", size: "sm", tools: ["Video ads", "Text-to-video"] },
+        { name: "Icon", size: "sm", tools: ["Creative intelligence", "Optimization"] },
+        { name: "Anyword", size: "sm", tools: ["Predictive copywriting", "Performance scoring"] },
+        { name: "Descript", size: "sm", tools: ["Editing & transcription", "Cloned voices"] },
+        { name: "TripleWhale", size: "sm", tools: ["DTC attribution", "E-commerce analytics"] },
+        { name: "Adverity", size: "sm", tools: ["Data consolidation", "AI analytics"] },
+        { name: "Lotame", size: "sm", tools: ["DMP", "AI segmentation"] },
+        { name: "Outbrain", size: "sm", tools: ["ML recommendations", "Native ads"] }
+      ]}
+    };
+
+    const sizeToClass = s => ({ xl:'size-xl', lg:'size-lg', md:'size-md', sm:'size-sm' }[s] || 'size-md');
+    const sizeOrder = { xl:3, lg:2, md:1, sm:0 };
+
+    function el(tag, attrs={}, children=[]) {
+      const node = document.createElement(tag);
+      for (const [k,v] of Object.entries(attrs)) {
+        if (k === 'class') node.className = v;
+        else if (k === 'dataset') { for (const [dk,dv] of Object.entries(v) ) node.dataset[dk] = dv; }
+        else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.substring(2), v);
+        else node.setAttribute(k, v);
+      }
+      (Array.isArray(children) ? children : [children]).forEach(c => {
+        if (c == null) return;
+        if (typeof c === 'string') node.appendChild(document.createTextNode(c));
+        else node.appendChild(c);
+      });
+      return node;
+    }
+
+    const list = document.getElementById('list');
+    const inputQ = document.getElementById('q');
+    const logosToggle = document.getElementById('logosToggle');
+    const ftip = document.getElementById('ftooltip');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const blocks = {};
+    let cardsIndex = [];
+    let state = { category: 'all', size: 'all', sort: 'relevance', q: '' };
+
+    function initialsFromName(name){
+      const words = name.replace('+',' ').split(' ').filter(Boolean);
+      const first = words[0] ? words[0][0] : '';
+      const last = words[1] ? words[1][0] : '';
+      return (first + last).toUpperCase();
+    }
+
+    function render(){
+      list.innerHTML = "";
+      cardsIndex = [];
+      Object.entries(CATEGORIES).forEach(([k,v]) => {
+        const header = el('div', {class:'cat-header '+v.badgeClass}, [
+          el('span', {class:'ico', 'aria-hidden':'true'}, v.ico),
+          el('span', {}, v.name)
+        ]);
+        const wrap = el('div', {class:'cards'});
+
+        v.companies.forEach(c => {
+          const logoWrap = el('div', {class:'logo'});
+          const domain = LOGO_DOMAIN[c.name];
+          if (domain){
+            const img = new Image();
+            img.src = "https://logo.clearbit.com/" + domain;
+            img.alt = c.name + " logo";
+            img.onerror = () => { img.remove(); logoWrap.appendChild(el('div',{class:'init'}, initialsFromName(c.name))); };
+            logoWrap.appendChild(img);
+          } else {
+            logoWrap.appendChild(el('div',{class:'init'}, initialsFromName(c.name)));
+          }
+
+          const card = el('button', { class:`card ${sizeToClass(c.size)}`, 'aria-label': c.name+', details' }, [
+            logoWrap,
+            el('p',{class:'name'}, c.name)
+          ]);
+          card.dataset.size = c.size;
+          card.addEventListener('mouseenter', (ev)=> showTip(ev, c));
+          card.addEventListener('mousemove', (ev)=> moveTip(ev));
+          card.addEventListener('mouseleave', hideTip);
+
+          wrap.appendChild(card);
+          cardsIndex.push({ node: card, name: c.name.toLowerCase(), tools: c.tools.join(' ').toLowerCase(), category: k, size: c.size, data:c });
+        });
+
+        const block = el('section', {class:'category', dataset:{cat:k}}, [header, wrap]);
+        blocks[k] = block;
+        list.appendChild(block);
+      });
+      updateCounts();
+      applyFilterSort();
+      updateLogosVisibility();
+    }
+
+    function showTip(ev, c){
+      ftip.innerHTML = "";
+      ftip.appendChild(el('h4', {}, c.name));
+      const ul = el('ul', {});
+      c.tools.forEach(t => ul.appendChild(el('li', {}, t)));
+      ftip.appendChild(ul);
+      ftip.classList.remove('hidden');
+      moveTip(ev);
+    }
+    function moveTip(ev){
+      const pad = 14;
+      const x = Math.min(window.innerWidth - 300, ev.clientX + pad);
+      const y = Math.min(window.innerHeight - 160, ev.clientY + pad);
+      ftip.style.transform = `translate(${x}px, ${y}px)`;
+    }
+    function hideTip(){ ftip.classList.add('hidden'); ftip.style.transform = 'translate(-9999px,-9999px)'; }
+
+    function updateCounts(){
+      const counts = Object.fromEntries(Object.keys(CATEGORIES).map(k=>[k,0]));
+      cardsIndex.forEach(ci => counts[ci.category]++);
+      const sum = Object.values(counts).reduce((a,b)=>a+b,0);
+      document.getElementById('count-all').textContent = sum;
+      Object.keys(counts).forEach(k => {
+        const elc = document.getElementById('count-'+k);
+        if (elc) elc.textContent = counts[k];
+      });
+    }
+
+    document.addEventListener('click', (e)=>{
+      const item = e.target.closest('.menu .item');
+      if (item) {
+        const menu = item.closest('.menu');
+        const pillParent = menu.parentElement;
+        menu.querySelectorAll('.item').forEach(i=>i.classList.remove('active'));
+        item.classList.add('active');
+        pillParent.setAttribute('aria-expanded','false');
+        menu.classList.remove('show');
+        const val = item.dataset.value;
+        const kind = pillParent.dataset.dd;
+        state[kind] = val;
+        const label = pillParent.querySelector('.label[data-label="'+kind+'"]');
+        label.textContent = item.dataset.text || label.textContent;
+        applyFilterSort();
+        return;
+      }
+      const pill = e.target.closest('.pill');
+      if (pill) {
+        const expanded = pill.getAttribute('aria-expanded') === 'true';
+        closeAllMenus();
+        pill.setAttribute('aria-expanded', String(!expanded));
+        const m = pill.querySelector('.menu');
+        if (m) m.classList.toggle('show', !expanded);
+        return;
+      }
+      if (!e.target.closest('.pill')) closeAllMenus();
+    });
+
+    function closeAllMenus(){
+      document.querySelectorAll('.pill[aria-expanded="true"]').forEach(p=>p.setAttribute('aria-expanded','false'));
+      document.querySelectorAll('.menu.show').forEach(m=>m.classList.remove('show'));
+    }
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === '/' && document.activeElement !== inputQ){
+        e.preventDefault(); inputQ.focus();
+      }
+    });
+    inputQ.addEventListener('input', () => { state.q = inputQ.value.trim().toLowerCase(); applyFilterSort(); });
+
+    function applyFilterSort(){
+      Object.entries(blocks).forEach(([k,b]) => {
+        if (state.category !== 'all' && k !== state.category) b.classList.add('hidden'); else b.classList.remove('hidden');
+      });
+      cardsIndex.forEach(ci => {
+        const matchQ = !state.q || ci.name.includes(state.q) || ci.tools.includes(state.q);
+        const matchSize = state.size === 'all' || ci.size === state.size;
+        ci.node.style.display = (matchQ && matchSize) ? '' : 'none';
+      });
+      const sizeOrder = { xl:3, lg:2, md:1, sm:0 };
+      Object.entries(blocks).forEach(([k, b]) => {
+        const wrap = b.querySelector('.cards');
+        const nodes = Array.from(wrap.children).filter(n=>n.style.display !== 'none');
+        let arr = nodes;
+        if (state.sort === 'name-asc') {
+          arr = nodes.sort((a, b) => a.querySelector('.name').textContent.localeCompare(b.querySelector('.name').textContent));
+        } else if (state.sort === 'size-desc') {
+          arr = nodes.sort((a,b) => (sizeOrder[b.dataset.size]??0) - (sizeOrder[a.dataset.size]??0));
+        } else if (state.sort === 'size-asc') {
+          arr = nodes.sort((a,b) => (sizeOrder[a.dataset.size]??0) - (sizeOrder[b.dataset.size]??0));
+        }
+        arr.forEach(n => wrap.appendChild(n));
+      });
+    }
+
+    function updateLogosVisibility(){
+      const show = logosToggle.checked;
+      document.querySelectorAll('.logo').forEach(el => { el.style.display = show ? '' : 'none'; });
+    }
+    logosToggle.addEventListener('change', updateLogosVisibility);
+
+    resetBtn.addEventListener('click', ()=>{
+      state = { category:'all', size:'all', sort:'relevance', q:'' };
+      inputQ.value = '';
+      document.querySelectorAll('.pill .menu').forEach(m=>{
+        m.querySelectorAll('.item').forEach(i=>i.classList.remove('active'));
+        const first = m.querySelector('.item[data-value="all"]') || m.querySelector('.item');
+        if (first){ first.classList.add('active'); }
+      });
+      document.querySelector('.label[data-label="category"]').textContent = 'Category';
+      document.querySelector('.label[data-label="size"]').textContent = 'Size';
+      document.querySelector('.label[data-label="sort"]').textContent = 'Sort by';
+      applyFilterSort();
+    });
+
+    render();
+  </script>
+</body>
+</html>
